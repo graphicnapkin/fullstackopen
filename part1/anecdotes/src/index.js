@@ -21,7 +21,7 @@ const App = ({anecdotes}) => {
     <div>
       <Content header="Anecdote of the day" anecdote= {anecdotes[selected]} voteCount={votes[selected] || "0"} />
       <Buttons text={"vote"} handler={handleVote}/><Buttons text={"next anecdote"} handler={handleClick}/>
-      <Content header="Highest Voted" anecdote= {votes.anecdote} voteCount={votes.highestVoteCount || "0"} />
+      <Content header="Highest Voted" anecdote= {votes.anecdote} voteCount={votes.highestVoteCount} />
     </div>
   )
 }
