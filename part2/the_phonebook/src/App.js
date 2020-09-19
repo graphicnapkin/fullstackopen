@@ -13,6 +13,16 @@ const App = () => {
   const handleNumberChange = ({target:{value}}) => setNewNumber(value)
   const handleFilterChange = ({target:{value}}) => setNewFilter(value)
 
+  const makeError = errorMsg => {
+    setErrorMessage(errorMsg)
+    setTimeout(() => setErrorMessage(null), 5000)
+  }
+
+  const makeAlert = message => {
+    setAlertMessage(message)
+    setTimeout(() => setAlertMessage(null), 5000)
+  }
+
   useEffect(()=>{
     peopleService
       .getAll()
@@ -21,42 +31,42 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
+    if(!newName | !newNumber) return makeError('You must provide both a Name and Number')
+
     const person = persons.find(person => person.name === newName)
     if(person){
       if(window.confirm(`${newName} is already added to the phonebook, `+
       `replace the old number with a new one?`)){
-        peopleService.update(person.id,{...person,number:newNumber})
+        peopleService.update(person.id,newNumber)
         .then(({data}) => {
           setPersons(persons.map(person => person.id === data.id ? data : person))
-          setAlertMessage(`${newName} updated...`)
-          setTimeout(() => {
-            setAlertMessage(null)
-          }, 5000);
-        }).catch(error => {
-          setErrorMessage(`${newName} was removed from server...`)
-          setPersons(persons.filter(person => person.name !== newName))
-        })
+          makeAlert(`${newName} updated...`)
+        }).catch(err => makeError((JSON.stringify(err.response.data))))
       } return
     }
     peopleService
-    .create({name:newName, number: newNumber})
+    .create({name:newName, phoneNumber: newNumber})
     .then(response => response.data)
-    .then(({name,number,id}) => setPersons([...persons,{name, number,id}]))
-    setAlertMessage(`${newName} added...`)
-    setTimeout(() => {
-      setAlertMessage(null)
-    }, 5000);
+    .then(({name,phoneNumber,id}) => {
+      setPersons([...persons,{name,phoneNumber,id}])
+      makeAlert(`${newName} added...`)
+    })
+    .catch(err => makeError(err.response.data.error))
   }
 
   const deletePerson = ({target:{value: id}}) => { //destructure the value out of target, rename it to id
+    let personName = ''
     peopleService
     .getPerson(id)
-    .then(({data:{name}}) => window.confirm(`Delete ${name}?`))
+    .then(({data:{name}}) => {
+      personName = name
+      return window.confirm(`Delete ${name}?`)})
     .then(answer => {
       if(answer){
         peopleService
         .deletePerson(id)
-        .then(setPersons(persons.filter(person => person.id !== +id)))
+        .then(setPersons(persons.filter(person => person.id !== id)))
+        .then(makeAlert(`${personName} deleted`))
       }
     })
   }
@@ -118,13 +128,13 @@ const Numbers = ({persons, filter, deletePerson }) => {
           </tr>
         </thead>
         <tbody>
-          {persons.filter(person => RegExp(filter).test(person.name) || RegExp(filter).test(person.number))
-            .map(({name,number,id}) => {
+          {persons.filter(person => RegExp(filter,"i").test(person.name) || RegExp(filter,"i").test(person.number))
+            .map(({name,phoneNumber,id}) => {
               return (
                 <Person 
                   key={id}
                   name={name} 
-                  number={number}
+                  phoneNumber={phoneNumber}
                   id={id}
                   deletePerson={deletePerson}
                 />
@@ -137,11 +147,11 @@ const Numbers = ({persons, filter, deletePerson }) => {
   )
 }
 
-const Person = ({name, number,id,deletePerson}) => {
+const Person = ({name, phoneNumber,id,deletePerson}) => {
   return (
     <tr>
       <td>{name}</td>
-      <td >{number}  <button value={id} onClick={deletePerson}>delete</button></td>
+      <td >{phoneNumber}  <button value={id} onClick={deletePerson}>delete</button></td>
     </tr>
   )
 }

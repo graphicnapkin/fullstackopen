@@ -19,9 +19,9 @@ const App = ({anecdotes}) => {
   }
   return (
     <div>
-      <Content header="Anecdote of the day" anecdote= {anecdotes[selected]} voteCount={votes[selected] || "0"} />
+      <Content header="Anecdote of the day" anecdote={anecdotes[selected]} voteCount={votes[selected] || "0"} />
       <Buttons text={"vote"} handler={handleVote}/><Buttons text={"next anecdote"} handler={handleClick}/>
-      <Content header="Highest Voted" anecdote= {votes.anecdote} voteCount={votes.highestVoteCount} />
+      <Content header="Highest Voted" anecdote={votes.anecdote} voteCount={votes.highestVoteCount} />
     </div>
   )
 }
@@ -47,7 +47,6 @@ const anecdotes = [
   'Premature optimization is the root of all evil.',
   'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
 ]
-
 
 ReactDOM.render(
   <App anecdotes={anecdotes} />,
