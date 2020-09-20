@@ -19,9 +19,9 @@ const mostBlogs = blogs => {
   if(blogs.length === 0) return {}
   const authors = {}
 
-  return blogs.reduce((top,blog) => { 
-    authors[blog.author] ? authors[blog.author]++ : authors[blog.author] = 1
-    return authors[blog.author] < top.blogs ? top : { author: blog.author, blogs: authors[blog.author] }
+  return blogs.reduce((top,{author}) => { 
+    authors[author] ? authors[author]++ : authors[author] = 1
+    return authors[author] < top.blogs ? top : { author, blogs: authors[author] }
   }, { author: '', blogs: 0 })
 }
 
@@ -29,9 +29,9 @@ const mostLikes = blogs => {
   if(blogs.length === 0) return {}
   const authors = {}
 
-  return blogs.reduce((top,blog) => { 
-    authors[blog.author] ? authors[blog.author] += blog.likes : authors[blog.author] = blog.likes
-    return authors[blog.author] < top.likes ? top : { author: blog.author, likes: authors[blog.author] }
+  return blogs.reduce((top,{author, likes}) => { 
+    authors[author] ? authors[author] += likes : authors[author] = likes
+    return authors[author] < top.likes ? top : { author, likes: authors[author] }
   }, { author: '', likes: 0 })
 }
 
