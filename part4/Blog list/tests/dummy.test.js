@@ -85,7 +85,7 @@ describe('favorite blog', () => {
   })
 })
 
-describe('mostBlogs', () => {
+describe('most blogs', () => {
   test('when list has only one blog, returns the correct result', ()=> {
     const result = listHelper.mostBlogs([blogs[0]])
     expect(result).toEqual({
@@ -108,7 +108,7 @@ describe('mostBlogs', () => {
   })
 })
 
-describe('mostLikes', () => {
+describe('most likes', () => {
   test('when list has only one blog, returns the correct result', ()=> {
     const result = listHelper.mostLikes([blogs[0]])
     expect(result).toEqual({
