@@ -1,5 +1,6 @@
 const config = require('./utils/config')
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const blogRouter = require('./controllers/blog')
@@ -10,7 +11,9 @@ const logger = require('./utils/logger')
 logger.info(`connecting to ${config.MONGO_URI}`)
 mongoose.connect(config.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=> logger.info('connected....'))
-.catch(error => logger.error(`failed to connect... ${error.message}`))
+.catch(error => {
+  console.log(JSON.stringify(error))
+  logger.error(`failed to connect... ${error.message}`)})
 
 app.use(cors())
 app.use(express.json())

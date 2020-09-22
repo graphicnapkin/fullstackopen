@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug tests single run",
+      "type": "node",
+      "request": "launch",
+      "env": { "CI": "true" },
+      "runtimeExecutable": "${workspaceFolder}/node_modules/jest/bin/jest",
+      "args": ["test","--no-cache"],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
