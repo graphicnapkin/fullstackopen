@@ -2,8 +2,7 @@ POST http://localhost:3003/api/blogs
 content-type: application/json
 
 {
-  "title": "test 1",
+  "title": "test 122",
   "author": "jc",
-  "url": "graphicnapkin.com",
-  "liked": 1000000
+  "url": "graphicnapkin.com"
 }
