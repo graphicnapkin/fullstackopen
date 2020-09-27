@@ -22,12 +22,12 @@ beforeEach(async () => {
   const createdUser = await api.
   post('/api/users')
   .send({ username, name, password } = user)
-  testUserId = createdUser.id
+  testUserId = createdUser.body.id
 
   const loggedInUser = await api
   .post('/api/login')
   .send({ username, password } = user )
-  token = loggedInUser.token
+  token = loggedInUser.body.token
 })
 
 test('blogs are returned as json', async () => {
@@ -65,10 +65,10 @@ test('a valid blog can be added', async () => {
     likes: 132136,
     userId: testUserId
   }
-
+  
   await api
   .post('/api/blogs')
-  .set('Authorization', `Bearer ${token}`)
+  .set('authorization', `bearer ${token}`)
   .send(newBlog)
   .expect(201)
   .expect('Content-Type',/application\/json/)
@@ -91,17 +91,18 @@ test('blog will default to 0 likes if no likes given', async () => {
 
   const response = await api
   .post('/api/blogs')
+  .set('authorization', `bearer ${token}`)
   .send(newBlog1)
 
   const response2 = await api
   .post('/api/blogs')
+  .set('authorization', `bearer ${token}`)
   .send(newBlog2)
 
   expect(response.body.likes).toBe(0)
   expect(response2.body.likes).toBe(99)
 
   const users = await api.get('/api/users')
-  console.log(JSON.stringify(users.body,null,2))
 })
 
 test('blog without content is not added', async () => {
@@ -121,14 +122,38 @@ test('blog without content is not added', async () => {
 
   await api
   .post('/api/blogs')
+  .set('authorization', `bearer ${token}`)
   .send(newBlog1)
   .expect(400)
   .expect('Content-Type',/application\/json/)
 
   await api
   .post('/api/blogs')
+  .set('authorization', `bearer ${token}`)
   .send(newBlog2)
   .expect(400)
+  .expect('Content-Type',/application\/json/)
+})
+
+test('blog fails to create with bad token', async () => {
+  const newBlog1 = {
+    author: "J the mother fuckin C",
+    url: "https://googlez.com",
+    likes: 99,
+    userId: testUserId
+  }
+
+  await api
+  .post('/api/blogs')
+  .set('authorization', `bearer badToken`)
+  .send(newBlog1)
+  .expect(401)
+  .expect('Content-Type',/application\/json/)
+
+  await api //no token
+  .post('/api/blogs')
+  .send(newBlog1)
+  .expect(401)
   .expect('Content-Type',/application\/json/)
 })
 

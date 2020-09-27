@@ -1,8 +1,12 @@
 POST http://localhost:3003/api/blogs
 content-type: application/json
+Authorization: bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdyYXBoaWNuYXBraW4iLCJpZCI6IjVmNzAxZDMzNTY5ODBjM2NjNGFlNjgzZiIsImlhdCI6MTYwMTIxOTk1OH0.cO2MmuvOlhp464L_97ZqlcHuZ2XB3_heuBwpRdBm7dw
+
 
 {
   "title": "test 122",
   "author": "jc",
-  "url": "graphicnapkin.com"
+  "url": "graphicnapkin.com",
+  "userId": "5f701d3356980c3cc4ae683f"
+
 }
