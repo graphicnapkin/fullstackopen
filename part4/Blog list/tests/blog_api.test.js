@@ -25,10 +25,10 @@ test('there are are 4 blogs', async () => {
   expect(response.body).toHaveLength(4)
 })
 
-test('the first blog is about ', async () => {
-  const response = await api.get('/api/blogs')
-  expect(response.body[0]._id).toBe('5f66b629066ab6221effa1c4')
-})
+// test('the first blog is about ', async () => {
+//   const response = await api.get('/api/blogs')
+//   expect(response.body[0]._id).toBe('5f66b629066ab6221effa1c4')
+// })
 
 test('get by ID', async () => {
   const response = await api.get('/api/blogs/5f66b629066ab6221effa1c4')

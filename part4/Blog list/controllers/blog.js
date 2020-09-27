@@ -18,9 +18,10 @@ blogRouter.post('/', async ({body}, response) => {
 })
 
 blogRouter.delete('/:id', async ({params:{id}}, response) => {
-  const blog = await Blog.findByIdAndDelete(id)
+  await Blog.findByIdAndDelete(id)
   response.status(204).end()
-})
+})   
+
 
 blogRouter.put('/:id', async (request, response) => {
   const updatedBlog = await Blog
