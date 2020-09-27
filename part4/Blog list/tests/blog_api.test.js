@@ -1,16 +1,25 @@
 //https://fullstackopen.com/en/part4/testing_the_backend
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const {initialBlogs: blogs} = require('./tests_helper')
 const api = supertest(app)
+let testUserId
 
 beforeEach(async () => {
   await Blog.deleteMany({})
   const blogObjects = blogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
+
+  await User.deleteMany({})
+  const passwordHash = await bcrypt.hash('sekret', 10)
+  const user = new User ({ username: 'gnapkin', name: 'Jon Carter', passwordHash})
+  testUserId = user._id
+  await user.save()
 })
 
 test('blogs are returned as json', async () => {
@@ -25,10 +34,10 @@ test('there are are 4 blogs', async () => {
   expect(response.body).toHaveLength(4)
 })
 
-// test('the first blog is about ', async () => {
-//   const response = await api.get('/api/blogs')
-//   expect(response.body[0]._id).toBe('5f66b629066ab6221effa1c4')
-// })
+test('the first blog is about ', async () => {
+  const response = await api.get('/api/blogs')
+  expect(response.body[0].id).toBe('5f66b629066ab6221effa1c4')
+})
 
 test('get by ID', async () => {
   const response = await api.get('/api/blogs/5f66b629066ab6221effa1c4')
@@ -45,7 +54,8 @@ test('a valid blog can be added', async () => {
     title: "test Blog 17",
     author: "J the mother fuckin C",
     url: "https://googlez.com",
-    likes: 132136
+    likes: 132136,
+    userId: testUserId
   }
 
   await api
@@ -60,31 +70,44 @@ test('blog will default to 0 likes if no likes given', async () => {
     title: "test Blog 17",
     author: "J the mother fuckin C",
     url: "https://googlez.com",
+    userId: testUserId
   }
   const newBlog2 = {
     title: "test Blog 18",
     author: "J the mother fuckin C",
     url: "https://googlez.com",
-    likes: 99
+    likes: 99,
+    userId: testUserId
   }
 
-  const response = await api.post('/api/blogs').send(newBlog1)
-  const response2 = await api.post('/api/blogs').send(newBlog2)
+  const response = await api
+  .post('/api/blogs')
+  .send(newBlog1)
+
+  const response2 = await api
+  .post('/api/blogs')
+  .send(newBlog2)
+
   expect(response.body.likes).toBe(0)
   expect(response2.body.likes).toBe(99)
+
+  const users = await api.get('/api/users')
+  console.log(JSON.stringify(users.body,null,2))
 })
 
 test('blog without content is not added', async () => {
   const newBlog1 = {
     author: "J the mother fuckin C",
     url: "https://googlez.com",
-    likes: 99
+    likes: 99,
+    userId: testUserId
   }
 
   const newBlog2 = {
     title: "test Blog 18",
     url: "https://googlez.com",
-    likes: 99
+    likes: 99,
+    userId: testUserId
   }
 
   await api
