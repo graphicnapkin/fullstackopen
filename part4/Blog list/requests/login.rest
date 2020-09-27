@@ -1,0 +1,7 @@
+POST HTTP://localhost:3003/api/login
+content-type: application/json
+
+{
+  "username": "graphicnapkin",
+  "password": "badpassword"
+}
