@@ -1,39 +1,54 @@
-import React from 'react'
+import React, {useState} from 'react'
 
-function BlogForm({handleBlogPost, newBlog, setNewBlog}) {
-  const blog = {}
-  let title,author,url
+function BlogForm({createBlogPost}) {
+
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  const addBlogPost = (event) => {
+    event.preventDefault()
+    createBlogPost({
+      title,
+      author,
+      url
+    })
+  }
+
   return (
-    <form onSubmit={handleBlogPost}>
-      <div>
-        title
-        <input
-          type="text"
-          name="Title"
-          value={newBlog.title}
-          onChange={({ target }) => setNewBlog({ ...newBlog, title: target.value })}
-        />
-      </div>
-      <div>
-        author
-        <input
-          type="text"
-          name="Author"
-          value={newBlog.author}
-          onChange={({ target }) => setNewBlog({ ...newBlog, author: target.value })}
-        />
-      </div>
-      <div>
-        url
-        <input
-          type="text"
-          name="Url"
-          value={newBlog.url}
-          onChange={({ target }) => setNewBlog({ ...newBlog, url: target.value })}
-        />
-      </div>
-      <button type="submit">create</button>
-    </form>
+    <>
+      <form onSubmit={addBlogPost}>
+        <h2>new blog</h2>
+        <div>
+          {`title:    `} 
+          <input
+            type="text"
+            name="Title"
+            value={title}
+            onChange={({ target }) => setTitle(target.value)}
+          />
+        </div>
+        <div>
+          {`author: `} 
+          <input
+            type="text"
+            name="Author"
+            value={author}
+            onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          {`url: `} 
+          <input
+            type="text"
+            name="Url"
+            value={url}
+            onChange={({ target }) => setUrl(target.value)}
+          />
+        </div>
+        <button type="submit">create</button>
+      </form>
+    </>
   )
 }
 
