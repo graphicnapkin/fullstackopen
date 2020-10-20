@@ -28,6 +28,11 @@ app.use(express.static('build'))
 app.use('/api/blogs',blogRouter)
 app.use('/api/users',usersRouter)
 app.use('/api/login', loginRouter)
+console.log(process.env.NODE_ENV)
+if(process.env.NODE_ENV === 'development') {
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
 app.use(unknownEndpoint)
 app.use(errorHandler)
 
