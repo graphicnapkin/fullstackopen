@@ -10,21 +10,21 @@ import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [showAll, setShowAll] = useState(true)
   const [alertMessage, setAlertMessage] = useState(null)
   const [user, setUser] = useState(null)
 
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    const user = JSON.parse(loggedUserJSON)
-    if (loggedUserJSON) setUser(user)
+    ( async () => {
+      setBlogs(await blogService.getAll())
+
+      const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+      const user = JSON.parse(loggedUserJSON)
+      if (loggedUserJSON) setUser(user)
+    })()
   }, [])
 
-  const handleLogin = async ({username,password}) => {
+  const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({
         username, password
@@ -33,17 +33,17 @@ const App = () => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       setUser(user)
     } catch (exception) {
-      setAlertMessage({text:'Wrong credentials',type:'error'})
+      setAlertMessage({ text:'Wrong credentials',type:'error' })
       clearAlert()
     }
   }
 
-  const handleLogout = event => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     setUser(null)
   }
 
-  const createBlogPost = async ({title,author,url}) => {
+  const createBlogPost = async ({ title, author, url }) => {
     try {
       await blogService.postBlog(
         {
@@ -55,18 +55,28 @@ const App = () => {
         user.token
       )
 
-      blogService.getAll().then(blogs => setBlogs(blogs))
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
 
-      setAlertMessage({text:`a new blog ${title} by ${author} added`, type:'alert'})
+      setAlertMessage({ text:`a new blog ${ title } by ${ author } added`, type:'alert' })
       clearAlert()
-
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      )
 
     } catch (exception) {
-      setAlertMessage({text:'Invalid BlogPost',type:'error'})
+      setAlertMessage({ text:'Invalid BlogPost',type:'error' })
       clearAlert()
+    }
+  }
+
+  const likeBlogPost = async ({ id, likes }) => {
+    likes++
+    await blogService.likeBlog({ id, likes },user.token)
+    setBlogs(await blogService.getAll())
+  }
+
+  const deleteBlogPost = async ({ id, title, author }) => {
+    if(window.confirm(`Remove blog ${ title } by ${ author }?`)){
+      blogService.deleteBlog({ id },user.token)
+      setBlogs(blogs.filter(blog => blog.id !== id))
     }
   }
 
@@ -77,32 +87,35 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <Togglable buttonLabel={'login'}>
-      <Login handleLogin={handleLogin} />
+    <Togglable buttonLabel={ 'login'}>
+      <Login handleLogin={ handleLogin } />
     </Togglable>
   )
 
   const blogForm = () => (
     <>
-      <LoggedIn name={user.name} handleLogout={handleLogout}/>
-      <Togglable buttonLabel={'new blog'}>
+      <LoggedIn name={ user.name } handleLogout={ handleLogout }/>
+      <Togglable buttonLabel={ 'new blog' }>
         <BlogForm
-          createBlogPost={createBlogPost}
-          user={user}
+          createBlogPost={ createBlogPost }
+          user={ user }
         />
       </Togglable>
       <p></p>
     </>
   )
-  
 
   return (
     <div>
-      <Notification message={alertMessage}/>
-  
-      {user === null && loginForm()}
-      {user !== null && blogForm()}
-      <BlogList blogs={blogs} user={user}/>
+      <Notification message={ alertMessage }/>
+      { user === null && loginForm() }
+      { user !== null && blogForm() }
+      <BlogList
+        blogs={ blogs }
+        user={ user }
+        likeBlogPost={ likeBlogPost }
+        deleteBlogPost={ deleteBlogPost }
+      />
     </div>
   )
 }

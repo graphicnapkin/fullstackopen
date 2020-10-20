@@ -1,7 +1,8 @@
 import React from 'react'
 import Togglable from './Togglable'
+import PropTypes from 'prop-types'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeBlogPost, deleteBlogPost, currentUser }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -9,15 +10,48 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
+  let { title, url, likes, id, author, user } = blog
+  user = user || { username: 'graphicnapkin' }
+  const deleteButton = () => (
+    <>
+      <button
+        id={id}
+        value={id}
+        onClick={() => deleteBlogPost(blog)}
+      >remove</button><br/>
+    </>
+  )
+
+  const likeButton = () => (
+    <>
+      <button
+        value={id}
+        onClick={() => likeBlogPost({ id, likes })}
+      >like</button>
+    </>
+  )
+
   return (
-  <div style={blogStyle}>{blog.title} {' '}
-  <Togglable buttonLabel={'view'} cancelLabel={'hide'}>
-      url: {blog.url} <br/>
-      likes: {blog.likes} <button onClick={''}>like</button> <br/>
-      author: {blog.author} <br/>
-    </Togglable>
-  </div>
-)}
+    <div style={blogStyle}> {title} {' '}
+      <Togglable
+        id={id}
+        buttonLabel={ 'view' }
+        cancelLabel={'hide'}
+      >
+          url: {url} <br/>
+          likes: { `${ likes ||'0'} ` } { likeButton() } <br/>
+          author: { author } <br/>
+        { currentUser.username === user.username && deleteButton() }
+      </Togglable>
+    </div>
+  )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  likeBlogPost: PropTypes.func.isRequired,
+  deleteBlogPost: PropTypes.func.isRequired,
+  currentUser: PropTypes.object.isRequired
+}
 
 export default Blog

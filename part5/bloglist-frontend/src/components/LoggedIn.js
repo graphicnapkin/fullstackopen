@@ -1,6 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
-function LoggedIn({name,handleLogout}) {
+function LoggedIn({ name, handleLogout }) {
   return (
     <div>
       <h1>blogs</h1>
@@ -9,4 +10,8 @@ function LoggedIn({name,handleLogout}) {
   )
 }
 
+LoggedIn.propTypes = {
+  name: PropTypes.string.isRequired,
+  handleLogout: PropTypes.func.isRequired
+}
 export default LoggedIn

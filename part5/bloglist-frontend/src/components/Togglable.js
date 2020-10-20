@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
-const Togglable = ({buttonLabel, children, cancelLabel}) => {
+const Togglable = ({ buttonLabel, children, cancelLabel, id }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -13,16 +14,20 @@ const Togglable = ({buttonLabel, children, cancelLabel}) => {
   return (
     <span>
       <span style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <button className={id} onClick={toggleVisibility}>{buttonLabel}</button>
       </span>
       <span style={showWhenVisible}>
         <button onClick={toggleVisibility}>{cancelLabel || 'cancel'}</button>
       </span>
       <div style={showWhenVisible}>
-       {children}
+        {children}
       </div>
     </span>
   )
+}
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired
 }
 
 export default Togglable
