@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 const logger = require('./utils/logger')
 
 //Connect to our test DB
+logger.info(`enviroment: ${process.env.NODE_ENV}`)
 logger.info(`connecting to ${config.MONGO_URI}`)
 mongoose.connect(config.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(()=> logger.info('connected....'))

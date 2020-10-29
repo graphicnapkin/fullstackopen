@@ -2,6 +2,7 @@ import React from 'react'
 
 const Notification = ({ message }) => {
   if (message) {
+    const className = message.type === 'error' ? 'error' : 'info'
     const color = message.type === 'error' ? 'red' : 'green'
     const style = {
       color,
@@ -10,7 +11,7 @@ const Notification = ({ message }) => {
       textAlign: 'center',
       background: 'lightgray'
     }
-    return <h3 style={style}>{ message.text}</h3>
+    return <h3 className ={className} style={style}>{ message.text}</h3>
   }
   return <></>
 }

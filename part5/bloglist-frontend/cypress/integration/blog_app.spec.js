@@ -21,13 +21,20 @@ describe('Blog app', function() {
     cy.contains('login').click()
   })
 
-  it('user can login', function(){
+  it('user can login', function() {
     cy.contains('login').click()
     cy.get('#username').type('graphicnapkin')
     cy.get('#password').type('badpassword')
     cy.get('#login-button').click()
 
     cy.contains('jc')
+  })
+
+  it('bad login fails', function() {
+    cy.contains('login').click()
+    cy.get('#username').type('baduser')
+    cy.get('#login-button').click()
+    cy.get('.error').should('have.css','color','rgb(255, 0,0)')
   })
 
   describe('when logged in', function () {
@@ -62,9 +69,8 @@ describe('Blog app', function() {
 
     it('user can delete a blog', function() {
       newBlog()
-      const blog = cy.contains('test title')
-      blog.contains('view').click()
-      blog.contains('remove').click()
+      cy.contains('view').click()
+      cy.contains('remove').click()
     })
 
   })
