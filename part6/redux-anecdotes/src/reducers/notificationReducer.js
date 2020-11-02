@@ -1,7 +1,7 @@
 const reducer = (state = '', { type, data }) => {
   switch(type.toUpperCase()) {
     case 'ALERT':
-      return `You voted for "${data}"` 
+      return data 
     case 'ERROR':
       return `Error: ${data}`
     case 'CLEAR':
@@ -11,10 +11,15 @@ const reducer = (state = '', { type, data }) => {
   }
 }
 
-export const alert = message => {
-  return {
-    type: message.type || 'alert',
-    data: message.data || message
+export const alert = (message, duration) => {
+  return async dispatch => {
+    dispatch({
+      type: message.type || 'alert',
+      data: message.data || message
+    })
+    return setTimeout(() => {
+      dispatch(clearAlert())
+    }, duration * 1000);
   }
 }
 
