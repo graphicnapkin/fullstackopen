@@ -5,10 +5,12 @@ import {
 } from 'react-router-dom'
 
 import AnecdoteList from './components/AnecdoteList'
+import Anecdote from './components/Anecdote'
 import CreateNew from './components/CreateNew'
 import About from './components/About'
 import Footer from './components/Footer'
 import db from './db.json'
+import Notification from './components/Notification'
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState(db)
@@ -17,6 +19,10 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = (Math.random() * 10000).toFixed(0)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(anecdote.content)
+    setTimeout(() => {
+      setNotification('')
+    }, 10000);
   }
 
   const anecdoteById = (id) =>
@@ -39,15 +45,17 @@ const App = () => {
 
   return (
     <Router>
+      <h1>Software anecdotes</h1>
       <div>
         <Link style={padding} to='/'>anecdotes</Link>
         <Link style={padding} to='/new'>create new</Link>
         <Link style={padding} to='/about'>about</Link>
       </div>
-
-      <h1>Software anecdotes</h1>
-
+      <Notification message={notification} />
       <Switch>
+        <Route path='/anecdotes/:id'>
+          <Anecdote anecdotes={anecdotes}/>
+        </Route>
         <Route path='/new'>
           <CreateNew addNew={addNew} />
         </Route>
@@ -55,7 +63,7 @@ const App = () => {
           <About />
         </Route>
         <Route path='/'>
-          <AnecdoteList anecdotes={anecdotes} />
+          <AnecdoteList anecdotes={anecdotes}/>
         </Route>
       </Switch>
 
