@@ -1,4 +1,5 @@
 import blogService from '../services/blogs'
+import { postNotification } from './NotificationReducer'
 
 const reducer = (state = [], { type, data }) => {
   switch(type) {
@@ -7,9 +8,7 @@ const reducer = (state = [], { type, data }) => {
   case 'INIT_BLOGS':
     return data
   case 'LIKE_BLOG':
-    console.log(state)
     return state.map(blog => {
-      console.log(data.id)
       if (blog.id === data.id) {
         return {
           ...blog,
@@ -25,11 +24,16 @@ const reducer = (state = [], { type, data }) => {
 
 export const createBlog = content => {
   return async dispatch => {
-    const newBlog = await blogService.postBlog(content.data, content.auth)
-    dispatch({
-      type: 'NEW_BLOG',
-      data: newBlog
-    })
+    try {
+      const newBlog = await blogService.postBlog(content.data, content.auth)
+      dispatch(postNotification({ text:`a new blog ${ content.data.title } by ${ content.data.author } added`, type:'alert' }))
+      dispatch({
+        type: 'NEW_BLOG',
+        data: newBlog
+      })
+    } catch (error) {
+      dispatch(postNotification({ text:`Invalid BlogPost ${error}`,type:'error' }))
+    }
   }
 }
 
@@ -46,7 +50,6 @@ export const initBlogs = () => {
 export const likeBlogPost = ({ id, likes, userToken }) => {
   return async dispatch => {
     await blogService.likeBlog({ id, likes: likes + 1 }, userToken)
-    console.log('made it into dispatch')
     dispatch({
       type: 'LIKE_BLOG',
       data: { id }

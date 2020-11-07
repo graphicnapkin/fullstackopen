@@ -12,22 +12,16 @@ const BlogList = () => {
     dispatch(initBlogs())
   }, [dispatch])
 
-  if(!user) return <></>
+  if(!user) return ''
 
   return (
-    <>
+    <div>
       {
         blogs
           .sort((a,b) => b.likes - a.likes)
-          .map(blog => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              currentUser={user}
-            />
-          ))
+          .map(blog => <Blog key={blog.id} blog={blog} />)
       }
-    </>
+    </div>
   )
 }
 

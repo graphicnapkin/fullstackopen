@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Togglable from '../components/Togglable'
 import LoggedIn from '../components/LoggedIn'
 
-import blogService from '../services/blogs'
+import  { createBlog } from '../reducers/BlogReducer'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { postNotification } from '../reducers/NotificationReducer'
@@ -16,23 +16,15 @@ const BlogForm = () => {
 
   const addBlogPost = (event) => {
     event.preventDefault()
-    try {
-      blogService.createBlogPost(
-        {
-          data: {
-            title,
-            author,
-            url,
-            userId: user.userId
-          },
-          auth: user.token
-        }
-      )
-      dispatch(postNotification({ text:`a new blog ${ title } by ${ author } added`, type:'alert' }))
-
-    } catch (exception) {
-      dispatch(postNotification({ text:'Invalid BlogPost',type:'error' }))
-    }
+    dispatch(createBlog({
+      data: {
+        title,
+        author,
+        url,
+        userId: user.userId
+      },
+      auth: user.token
+    }))
     setTitle('')
     setAuthor('')
     setUrl('')

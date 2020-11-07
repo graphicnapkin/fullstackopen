@@ -1,13 +1,15 @@
 import React from 'react'
 import Togglable from './Togglable'
 import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
 
 import { useSelector } from 'react-redux'
 import { likeBlogPost, deleteBlogPost } from '../reducers/BlogReducer'
 
 const Blog = ({ blog }) => {
   let { title, url, likes, id, author, user } = blog
-  const { token:userToken, userName } = useSelector(state => state.user)
+  const { token: userToken, userName } = useSelector(state => state.user)
+  const dispatch = useDispatch()
 
   const blogStyle = {
     paddingTop: 10,
@@ -21,33 +23,20 @@ const Blog = ({ blog }) => {
 
   const deleteButton = () => (
     <>
-      <button
-        id={id}
-        value={id}
-        onClick={() => deleteBlogPost(id, title, author, userToken)}
-      >remove</button><br/>
+      <button id={ id } value={ id } onClick={ deletePost } >remove</button><br/>
     </>
   )
 
-  const likeButton = () => (
-    <>
-      <button
-        value={id}
-        onClick={() => likeBlogPost({ id, likes, userToken })}
-      >like</button>
-    </>
-  )
+  const like = async () => await dispatch(likeBlogPost({ id, likes, userToken }))
+  const deletePost = async () => await dispatch(deleteBlogPost(id, title, author, userToken))
 
   return (
     <div style={blogStyle}> {title} {' '}
-      <Togglable
-        id={id}
-        buttonLabel={ 'view' }
-        cancelLabel={'hide'}
-      >
-          url: {url} <br/>
-          likes: { `${ likes ||'0'} ` } { likeButton() } <br/>
-          author: { author } <br/>
+      <Togglable id={ id } buttonLabel={'view'} cancelLabel={'hide'} >
+        url: { url } <br/>
+        likes: { `${ likes ||'0'} ` }
+        <button value={ id } onClick={ like }>like</button> <br/>
+        author: { author } <br/>
         { userName === user.username && deleteButton() }
       </Togglable>
     </div>
