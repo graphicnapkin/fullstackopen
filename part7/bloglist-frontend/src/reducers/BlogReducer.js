@@ -22,11 +22,11 @@ const reducer = (state = [], { type, data }) => {
   }
 }
 
-export const createBlog = content => {
+export const createBlog = ({ title, author, url, userId, auth }) => {
   return async dispatch => {
     try {
-      const newBlog = await blogService.postBlog(content.data, content.auth)
-      dispatch(postNotification({ text:`a new blog ${ content.data.title } by ${ content.data.author } added`, type:'alert' }))
+      const newBlog = await blogService.postBlog({ title, author, url, userId} , auth)
+      dispatch(postNotification({ text:`a new blog ${ title } by ${ author } added`, type:'alert' }))
       dispatch({
         type: 'NEW_BLOG',
         data: newBlog

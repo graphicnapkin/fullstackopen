@@ -8,7 +8,7 @@ import { likeBlogPost, deleteBlogPost } from '../reducers/BlogReducer'
 
 const Blog = ({ blog }) => {
   let { title, url, likes, id, author, user } = blog
-  const { token: userToken, userName } = useSelector(state => state.user)
+  const { token: userToken, username } = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   const blogStyle = {
@@ -29,6 +29,7 @@ const Blog = ({ blog }) => {
 
   const like = async () => await dispatch(likeBlogPost({ id, likes, userToken }))
   const deletePost = async () => await dispatch(deleteBlogPost(id, title, author, userToken))
+  console.log(username, user.username)
 
   return (
     <div style={blogStyle}> {title} {' '}
@@ -37,7 +38,7 @@ const Blog = ({ blog }) => {
         likes: { `${ likes ||'0'} ` }
         <button value={ id } onClick={ like }>like</button> <br/>
         author: { author } <br/>
-        { userName === user.username && deleteButton() }
+        { username === user.username && deleteButton() }
       </Togglable>
     </div>
   )

@@ -2,10 +2,8 @@ import React, { useState } from 'react'
 import Togglable from '../components/Togglable'
 import LoggedIn from '../components/LoggedIn'
 
-import  { createBlog } from '../reducers/BlogReducer'
-
 import { useDispatch, useSelector } from 'react-redux'
-import { postNotification } from '../reducers/NotificationReducer'
+import  { createBlog } from '../reducers/BlogReducer'
 
 const BlogForm = () => {
   const dispatch = useDispatch()
@@ -17,12 +15,10 @@ const BlogForm = () => {
   const addBlogPost = (event) => {
     event.preventDefault()
     dispatch(createBlog({
-      data: {
-        title,
-        author,
-        url,
-        userId: user.userId
-      },
+      title,
+      author,
+      url,
+      userId: user.userId,
       auth: user.token
     }))
     setTitle('')
