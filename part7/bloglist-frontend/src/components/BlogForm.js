@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import Togglable from '../components/Togglable'
-import LoggedIn from '../components/LoggedIn'
 
 import { useDispatch, useSelector } from 'react-redux'
 import  { createBlog } from '../reducers/BlogReducer'
@@ -28,8 +27,7 @@ const BlogForm = () => {
 
   if(user === null) return ''
   return (
-    <>
-      <LoggedIn />
+    <div style ={{ margin: 10 }}>
       <Togglable buttonLabel={ 'new blog' }>
         <form onSubmit={addBlogPost}>
           <h2>new blog</h2>
@@ -66,7 +64,7 @@ const BlogForm = () => {
           <button type='submit' id='submit-button'>create</button>
         </form>
       </Togglable>
-    </>
+    </div>
   )
 }
 

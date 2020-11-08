@@ -4,12 +4,14 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 import blogReducer from './reducers/BlogReducer'
 import notificationReducer from './reducers/NotificationReducer'
-import userReducer from './reducers/UserReducer'
+import loginReducer from './reducers/LoginReducer'
+import usersReducer from './reducers/UsersReducer'
 
 const reducer = combineReducers({
   blogs: blogReducer,
   notification: notificationReducer,
-  user: userReducer
+  user: loginReducer,
+  users: usersReducer
 })
 
 export const store = createStore(

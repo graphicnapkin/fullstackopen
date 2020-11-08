@@ -1,19 +1,23 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { loginUser } from '../reducers/UserReducer'
+import { logoutUser } from '../reducers/LoginReducer'
 
 const LoggedIn = () => {
+  const history = useHistory()
   const dispatch = useDispatch()
-  const name = useSelector(state => state.user.name)
+  const user = useSelector(state => state.user)
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogAppUser')
-    dispatch(loginUser(null))
+    dispatch(logoutUser())
+    history.push('/')
   }
+
+  if (!user) return ''
+
   return (
-    <div>
-      <h1>blogs</h1>
-      <p>{name} logged in <button type="submit" onClick={handleLogout}>logout</button></p>
-    </div>
+    <>
+      {user.name} logged in <button type="submit" onClick={handleLogout}>logout</button>
+    </>
   )
 }
 
