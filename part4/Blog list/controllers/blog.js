@@ -18,7 +18,6 @@ blogRouter.get('/:id', async ({params:{id}}, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const {body:{title,author,likes,url,userId}} = request
-  console.log(request.token)
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if(!decodedToken) return 
 
@@ -47,9 +46,12 @@ blogRouter.delete('/:id', async ({params:{id}}, response) => {
 
 
 blogRouter.put('/:id', async (request, response) => {
+  const update = request.body.likes ? { likes: request.body.likes }
+  : { comments: request.body.comments}
+
   const updatedBlog = await Blog
   .findByIdAndUpdate(request.params.id,{
-    $set:{ likes:request.body.likes }},
+    $set: update },
   { 
     new: true,
     useFindAndModify: false
@@ -57,6 +59,5 @@ blogRouter.put('/:id', async (request, response) => {
   const {title,author,url,likes,_id}=updatedBlog
   response.json({title,author,url,likes,id:_id.toString()})
 })
-
 
 module.exports = blogRouter
