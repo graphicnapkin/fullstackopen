@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 import { useSelector, useDispatch } from 'react-redux'
 import { getUsers } from '../reducers/UsersReducer'
+
 
 const Users = () => {
   const dispatch = useDispatch()
@@ -13,7 +15,7 @@ const Users = () => {
   const users = useSelector(state => state.users)
 
   return (
-    <table>
+    <Table striped>
       <thead>
         <tr>
           <td><b>User</b></td>
@@ -28,7 +30,7 @@ const Users = () => {
           </tr>)
         }
       </tbody>
-    </table>
+    </Table>
   )
 }
 

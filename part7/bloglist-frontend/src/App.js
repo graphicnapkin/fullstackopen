@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route
 } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { setUser } from './reducers/LoginReducer'
@@ -13,12 +13,9 @@ import Login from './components/Login'
 import Notification from './components/Notification'
 import Users from './components/Users'
 import User from './components/User'
-import LoggedIn from './components/LoggedIn'
+import NavigationBar from './components/NavBar'
 
 const App = () => {
-  const padding = {
-    padding: 5
-  }
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -28,38 +25,36 @@ const App = () => {
   }, [dispatch])
 
   return (
-    <Router>
+    <div className='container'>
+      <Router>
 
-      <div>
-        <Link style={ padding } to='/'>Blogs</Link>
-        <Link style={ padding } to='/users'>Users</Link>
-        <LoggedIn />
-      </div>
-      <Notification />
-      <Login />
+        <NavigationBar/>
+        <Notification />
+        <Login />
 
-      <Switch>
+        <Switch>
 
-        <Route path='/blogs/:id'>
-          <Blog />
-        </Route>
+          <Route path='/blogs/:id'>
+            <Blog />
+          </Route>
 
-        <Route path='/users/:id'>
-          <User />
-        </Route>
+          <Route path='/users/:id'>
+            <User />
+          </Route>
 
-        <Route path='/users'>
-          <Users />
-        </Route>
+          <Route path='/users'>
+            <Users />
+          </Route>
 
-        <Route path ='/'>
-          <BlogForm />
-          <BlogList />
-        </Route>
+          <Route path ='/'>
+            <BlogForm />
+            <BlogList />
+          </Route>
 
-      </Switch>
+        </Switch>
 
-    </Router>
+      </Router>
+    </div>
   )
 }
 

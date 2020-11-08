@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import Togglable from '../components/Togglable'
+import { Form, Button } from 'react-bootstrap'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { loginUser } from '../reducers/LoginReducer'
+import { postNotification } from '../reducers/NotificationReducer'
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -13,48 +15,37 @@ const Login = () => {
   const login = event => {
     event.preventDefault()
     dispatch(loginUser({ username, password }))
+    dispatch(postNotification({ type: 'success', text: `Welcome ${username}` }))
     setUsername('')
     setPassword('')
-  }
-
-  const style = {
-    //padding: 10,
-    margin: 10
   }
 
   if(user !== null) return ('')
 
   return (
-    <div style={ style }>
-      <Togglable buttonLabel={ 'login'}>
-        <h2 >Log in to the Application</h2>
-        <form onSubmit={login}>
-          <div>
-            username
-            <input
-              id='username'
-              type='text'
-              value={username}
-              name='Username'
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              id='password'
-              type='password'
-              value={password}
-              name='Password'
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button style ={ style } type='submit' id='login-button'>
-            login
-          </button>
-        </form>
-      </Togglable>
-    </div>
+    <Togglable buttonLabel={ 'login'}>
+      <h2 >Log in to the Application</h2>
+      <Form onSubmit={ login }>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control
+            type='text'
+            name='username'
+            value={ username }
+            onChange={({ target }) => setUsername(target.value)}
+          />
+          <Form.Label>password:</Form.Label>
+          <Form.Control
+            type='password'
+            value={ password }
+            onChange={({ target }) => setPassword(target.value)}
+          />
+          <Button variant='primary' type='submit'>
+          login
+          </Button>
+        </Form.Group>
+      </Form>
+    </Togglable>
   )
 }
 
